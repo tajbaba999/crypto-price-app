@@ -35,7 +35,7 @@ const Exchange = () => {
             ) : error ? (
                 <p>Error: {error.message}</p>
             ) : (
-               <HStack wrap={'wrap'} justifyContent={'center'}>
+               <HStack wrap={'wrap'} justifyContent={'space-evenly'}>
                         {exchanges.map((exchange) => (
                             <Exchangecard 
                             key={exchange.id}

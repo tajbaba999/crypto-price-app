@@ -1,6 +1,5 @@
 import React from 'react'
-import axios from 'axios';
-import { Container, HStack, Heading, Img, VStack, Text } from '@chakra-ui/react';
+import { Heading, Img, VStack, Text } from '@chakra-ui/react';
 
 const CoinCard = ({id, name, img, symbol, price, currencySymbol="₹" }) => {
     return (
