@@ -1,6 +1,8 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Container, HStack } from '@chakra-ui/react';
+import { Container, HStack, Heading, Img, VStack, Text } from '@chakra-ui/react';
+import Loader from './Loader';
+import Errorcomponent from './Errorcomponent';
 
 const Exchange = () => {
     const [exchanges, setExchanges] = useState([]);
@@ -13,41 +15,66 @@ const Exchange = () => {
                 const response = await axios.get('https://api.coingecko.com/api/v3/exchanges');
                 setExchanges(response.data);
                 console.log(response.data);
-                setLoading(false);
             } catch (err) {
                 setError(err);
                 console.error('Error fetching data:', err);
+            } finally {
                 setLoading(false);
             }
         };
 
-        if (exchanges.length === 0) {
-            fetchExchanges();
-        }
-    }, [exchanges]); // Only run the effect when exchanges is initially empty
+        fetchExchanges();
+    }, []);
+
+    if(error) return <Errorcomponent message={'Error while fetching exchange'}/>
 
     return (
         <Container maxW={'container.xl'}>
             {loading ? (
-                <p>Loading data...</p>
+                <Loader/> 
             ) : error ? (
                 <p>Error: {error.message}</p>
             ) : (
-                <HStack>
-                    {
-                        exchanges.map((i)=>(
-                           <Exchange key={i.key} name={i.name} img={i.img} rank={i.rank} url={i.url}/>
+               <HStack wrap={'wrap'} justifyContent={'center'}>
+                        {exchanges.map((exchange) => (
+                            <Exchangecard 
+                            key={exchange.id}
+                            name={exchange.name} 
+                            img={exchange.image} 
+                            rank={exchange.trust_score_rank} 
+                            url={exchange.url}/>
                         ))}
-                </HStack>
+                    </HStack>
             )}
         </Container>
     );
 };
 
-const ExchangeCard = ({name, img, rank, url}) => {
-    <a>
-        
-    </a>
-}
+const Exchangecard = ({ name, img, rank, url }) => {
+    return (
+        <a href={url} target="blank">
+            <VStack
+                w="250px"
+                shadow="lg"
+                p="8"
+                borderRadius="lg"
+                transition="all 0.3s"
+                m="4"
+                align="center"
+                css={{
+                    "&:hover" :{
+                        transform: "scale(1.1)"
+                    }
+                }}
+            >
+                <Img src={img} w="10" h="10" objectFit="contain" alt="Exchange" />
+                <Heading size="md" noOfLines={1}>
+                    {rank}
+                </Heading>
+                <Text noOfLines={1}>{name}</Text>
+            </VStack>
+        </a>
+    );
+};
 
 export default Exchange;
