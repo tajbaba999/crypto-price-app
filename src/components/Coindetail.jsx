@@ -20,12 +20,25 @@ import {
 } from "@chakra-ui/react";
 import Loader from "./Loader";
 import ErrorComponent from "./Errorcomponent";
+import Chart from "./Chart"; // Assuming you have a Chart component
 
 const CoinDetail = () => {
   const [coin, setCoin] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currency, setCurrency] = useState("inr");
+  const [days, setDays] = useState(1); // Set an initial number of days
+  const [chartArray, setChartArray] = useState({
+    labels: [],
+    datasets: [
+      {
+        label: "Price in INR",
+        data: [],
+        borderColor: "rgba(75, 192, 192, 1)",
+        backgroundColor: "rgba(75, 192, 192, 0.2)",
+      },
+    ],
+  });
 
   const currencySymbol =
     currency === "inr" ? "₹" : currency === "eur" ? "€" : "$";
@@ -38,8 +51,13 @@ const CoinDetail = () => {
         const { data } = await axios.get(
           `https://api.coingecko.com/api/v3/coins/${id}`
         );
-        console.log(data);
+
+        // Fetch chart data
+        const { data: chartData } = await axios.get(
+          `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=${currency}&days=${days}`
+        );
         setCoin(data);
+        setChartArray(chartData.prices);
         setLoading(false);
       } catch (err) {
         console.error("Error fetching data:", err);
@@ -49,11 +67,32 @@ const CoinDetail = () => {
     };
 
     fetchCoin();
-  }, [id]);
+  }, [id, currency, days]);
 
-  const handleCurrencyChange = (newCurrency) => {
-    setCurrency(newCurrency);
-  };
+  // const handleCurrencyChange = (newCurrency) => {
+  //   setCurrency(newCurrency);
+  // };
+
+  // const handleDaysChange = (newDays) => {
+  //   setDays(newDays);
+  // };
+
+  // const updateChartData = (chartData) => {
+  //   const labels = chartData.prices.map((priceData) =>
+  //     new Date(priceData[0]).toLocaleTimeString()
+  //   );
+  //   const prices = chartData.prices.map((priceData) => priceData[1]);
+
+  // setChartData({
+  //   labels: labels,
+  //   datasets: [
+  //     {
+  //       ...chartData.datasets[0], // You can customize dataset properties here
+  //       data: prices,
+  //     },
+  //   ],
+  // });
+  // };
 
   if (error) return <ErrorComponent message="Error while fetching coin" />;
 
@@ -63,12 +102,10 @@ const CoinDetail = () => {
         <Loader />
       ) : (
         <>
-          <Box width="full" borderWidth={5} margin={"7"}>
-            {coin.name && <div>Name: {coin.name}</div>}
-            {coin.symbol && <div>Symbol: {coin.symbol}</div>}
+          <Box width={"full"} borderWidth={1}>
+            <Chart arr={chartArray} currency={currencySymbol} days={days} />
           </Box>
-
-          <RadioGroup value={currency} onChange={handleCurrencyChange} p={"12"}>
+          <RadioGroup value={currency} onChange={setCurrency} p={"12"}>
             <HStack spacing={"4"}>
               <Radio value={"inr"}>₹ INR</Radio>
               <Radio value={"usd"}>$ USD</Radio>
@@ -110,14 +147,8 @@ const CoinDetail = () => {
             </Badge>
 
             <CustomBar
-              high={
-                `${currencySymbol}` +
-                `${coin.market_data.high_24h[currency.toLowerCase()]}`
-              }
-              low={
-                `${currencySymbol}` +
-                `${coin.market_data.low_24h[currency.toLowerCase()]}`
-              }
+              high={`${currencySymbol}${coin.market_data.high_24h[currency]}`}
+              low={`${currencySymbol}${coin.market_data.low_24h[currency]}`}
             />
 
             <Box w={"full"} p="4">
@@ -160,7 +191,7 @@ const CustomBar = ({ high, low }) => (
     <Progress value={50} colorScheme={"teal"} w={"full"} />
     <HStack justifyContent={"space-between"} w={"full"}>
       <Badge children={low} colorScheme={"red"} />
-      <Text fontSize={"sm"}> 24H Range</Text>
+      <Text fontSize={"sm"}>24H Range</Text>
       <Badge children={high} colorScheme={"green"} />
     </HStack>
   </VStack>
