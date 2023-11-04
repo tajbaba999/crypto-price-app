@@ -1,10 +1,13 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Header from './components/Header';
-import Home from './components/Home';
-import Exchange from './components/Exchange';
-import Coins from './components/Coins';
-import Coindetail from './components/Coindetail';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Header from "./components/Header";
+import Home from "./components/Home";
+import Exchange from "./components/Exchange";
+import Coins from "./components/Coins";
+import Coindetail from "./components/Coindetail";
+import Footer from "./components/Footer";
+import NotFound from "./components/NotFound";
+// import { TabTitle } from "./utils/GeneralFunctions";
 
 function App() {
   return (
@@ -15,8 +18,9 @@ function App() {
         <Route path="/coins" element={<Coins />} />
         <Route path="/exchange" element={<Exchange />} />
         <Route path="/coins/:id" element={<Coindetail />} />
-        {/* <Route path="*" element={<NotFound />} /> */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
+      <Footer />
     </Router>
   );
 }

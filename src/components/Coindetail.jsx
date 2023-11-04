@@ -17,6 +17,7 @@ import {
   StatArrow,
   Badge,
   Progress,
+  Button,
 } from "@chakra-ui/react";
 import Loader from "./Loader";
 import ErrorComponent from "./Errorcomponent";
@@ -43,7 +44,50 @@ const CoinDetail = () => {
   const currencySymbol =
     currency === "inr" ? "₹" : currency === "eur" ? "€" : "$";
 
+  const btns = ["24h", "7d", "14d", "30d", "60d", "200d", "1y", "max"];
+
   const { id } = useParams();
+
+  const switchChartStats = (key) => {
+    switch (key) {
+      case "24h":
+        setDays("24h");
+        setLoading(true);
+        break;
+      case "7d":
+        setDays("7d");
+        setLoading(true);
+        break;
+      case "14d":
+        setDays("14d");
+        setLoading(true);
+        break;
+      case "30d":
+        setDays("30d");
+        setLoading(true);
+        break;
+      case "60d":
+        setDays("60d");
+        setLoading(true);
+        break;
+      case "200d":
+        setDays("200d");
+        setLoading(true);
+        break;
+      case "1y":
+        setDays("365d");
+        setLoading(true);
+        break;
+      case "max":
+        setDays("max");
+        setLoading(true);
+        break;
+      default:
+        setDays("24h");
+        setLoading(true);
+        break;
+    }
+  };
 
   useEffect(() => {
     const fetchCoin = async () => {
@@ -105,6 +149,18 @@ const CoinDetail = () => {
           <Box width={"full"} borderWidth={1}>
             <Chart arr={chartArray} currency={currencySymbol} days={days} />
           </Box>
+
+          <HStack p="4" wrap={"wrap"}>
+            {btns.map((i) => (
+              <Button
+                // disabled={days === i}
+                key={i}
+                onClick={() => switchChartStats(i)}
+              >
+                {i}
+              </Button>
+            ))}
+          </HStack>
           <RadioGroup value={currency} onChange={setCurrency} p={"12"}>
             <HStack spacing={"4"}>
               <Radio value={"inr"}>₹ INR</Radio>
