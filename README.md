@@ -12,7 +12,7 @@ Track cryptocurrency prices effortlessly with CoinVista - your go-to platform fo
 ## 🔗 Screenshot
 
 ![Screenshot 1](https://github.com/tajbaba999/crypto-price-app/blob/main/Screenshots/Screenshot1.png)
-![Screenshot 2](https://github.com/tajbaba999/crypto-price-app/blob/main/Screenshots/Screenshot2.png)
+
 
 
 
